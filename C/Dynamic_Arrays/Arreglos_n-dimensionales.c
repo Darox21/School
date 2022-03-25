@@ -39,8 +39,8 @@ void print_indent(int indent);
 // indent: number of spaces to print before the array
 void print_array(int n, int *arr, int *dim, int size, int *counter, int indent);
 
-// Returns the address of the element in the array
-int *coord_to_index(int *index, int *dim, int dim_size, int *counters);
+// // Returns the address of the element in the array UNIMPLEMENTED
+// int *coord_to_index(int *index, int *dim, int dim_size, int *counters);
 
 // Computes the average of the array
 float average(int *arr, int size);
@@ -51,10 +51,10 @@ float average(int *arr, int size);
 /***********************************************************************************************/
 void main() {
     int *arr;
-    int size, counter;
-    int dim[] = {14};
+    int i, size, counter;
+    // int dim[] = {14};
     // Examples of dimensions
-    // int dim[] = {6, 9};
+    int dim[] = {6, 9};
     // int dim[] = {5, 5, 5};
     // int dim[] = {2, 3, 4, 5};
     // int dim[] = {6, 5, 4, 3, 2};
@@ -65,7 +65,7 @@ void main() {
 
     system("clear");
     printf("Creating a new array of dimensions: [");
-    for (int i = 0; i < dim_size; i++) {
+    for (i = 0; i < dim_size; i++) {
         printf("%d,", dim[i]);
     }
     printf("]\n");
@@ -117,13 +117,14 @@ int dim_to_size(int *dim, int dim_size) {
 }
 
 void print_indent(int indent) {
-    for (int i = 0; i < indent; i++) {
+    int i;
+    for (i = 0; i < indent; i++) {
         printf(" ");
     }
 }
 
 void print_array(int n, int *arr, int *dim, int size, int *counter, int indent) {
-    int i, j;
+    int i;
     if (n > 0) {
         for (i = 0; i < dim[n]; i++) {
             if (n >= 2) {
@@ -152,19 +153,19 @@ void print_array(int n, int *arr, int *dim, int size, int *counter, int indent) 
     
 }
 
-int *coord_to_index(int *index, int *dim, int dim_size, int *counters) {
-    int i;
-    int pos = 0;
-    for (i = 0; i < dim_size; i++) {
-        pos += dim[i] * counters[i];
-        printf("%d ", pos);
-    }
-    return &index[pos];
-}
+// int *coord_to_index(int *index, int *dim, int dim_size, int *counters) {
+//     int i;
+//     int pos = 0;
+//     for (i = 0; i < dim_size; i++) {
+//         pos += dim[i] * counters[i];
+//         printf("%d ", pos);
+//     }
+//     return &index[pos];
+// }
 
 void fill_array(int *arr, int *dim, int size, int rand_max) {
     int i = 0;
-    int *counter = calloc(sizeof(dim), sizeof(int));
+    // int *counter = calloc(sizeof(dim), sizeof(int));
     printf("[");
     for (i = 0; i < size; i++) {
         arr[i] = rand() % rand_max;
