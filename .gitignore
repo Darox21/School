@@ -9,7 +9,6 @@
 
 
 # Binaries
-*.exe
 *.o
 
 # devcpp
