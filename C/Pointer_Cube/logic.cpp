@@ -26,6 +26,7 @@ int node_number = 0;
 /***************************** Main *****************************/
 /****************************************************************/
 
+// MAIN TEMPORAL EN LO QUE HAGO EL ARCHIVO DE GRÁFICOS.
 // Este es un main() temporal para probar el código.
 // Pero como no estoy en un IDE, no iba a hacer un makefile manualmente.
 int main(){
@@ -36,7 +37,18 @@ int main(){
     print_cube(cube, 5);
 
     // // Suma una fila al cubo
-    // printf("Sum of the cube: %d\n", sum_of_cube(cube));
+    printf("Suma de la primera fila: %d\n", sum_of_row(cube));
+    printf("Suma de la primera columna: %d\n", sum_of_column(cube));
+    printf("Suma de la primera cara normal a x: %d (La que va del 1 al 120)\n", 
+        sum_of_layer(cube, 'x')
+    );
+    printf("Suma de la primera cara normal a y: %d (La que va del 1 al 104)\n", 
+        sum_of_layer(cube, 'y')
+    );
+    printf("Suma de la primera cara normal a z: %d (La que va del 1 al 24)\n", 
+        sum_of_layer(cube, 'z')
+    );
+    printf("Suma del cubo: %d\n", sum_of_cube(cube));
 
     // Libera el cubo
     // free_cube(cube);
@@ -193,14 +205,64 @@ void print_cube(struct Node *cube, int size){
 // // Iterar sobre cada cara y liberar la memoria.
 // void free_cube(struct Node *cube);
 
-// // Suma los valores a lo largo del eje X de izquierda a derecha.
-// int sum_of_row(struct Node *row);
+// Suma los valores a lo largo del eje X de izquierda a derecha.
+int sum_of_row(struct Node *row) {
+    int sum = 0;
+    struct Node *current = row;
+    while (current != NULL) {
+        sum += current->data;
+        current = current->right;
+    }
+    return sum;
+}
 
-// // Suma los valores a lo largo del eje Y de arriba a abajo.
-// int sum_of_column(struct Node *column);
+// Suma los valores a lo largo del eje Y de arriba a abajo.
+int sum_of_column(struct Node *column) {
+    int sum = 0;
+    struct Node *current = column;
+    while (current != NULL) {
+        sum += current->data;
+        current = current->down;
+    }
+    return sum;
+}
 
-// // Suma los valores en de una cara.
-// int sum_of_layer(struct Node *layer);
+// Suma los valores de una cara.
+// Suma los valores normales a el axis especificado. (x, y, z)
+// Es decir, si es en "z", suma los valores en el plano "x" y "y".
+int sum_of_layer(struct Node *layer, char axis) {
+    int sum = 0;
+    struct Node *currentrow = layer;
+    switch (axis) {
+        case 'x':
+            while (currentrow != NULL) {
+                sum += sum_of_column(currentrow);
+                currentrow = currentrow->front;
+            }
+            break;
+        case 'y':
+            while (currentrow != NULL) {
+                sum += sum_of_row(currentrow);
+                currentrow = currentrow->front;
+            }
+            break;
+        case 'z':
+            while (currentrow != NULL) {
+                sum += sum_of_row(currentrow);
+                currentrow = currentrow->down;
+            }
+            break;
+    }
+    return sum;
+}
 
-// // Suma los valores del cubo completo.
-// int sum_of_cube(struct Node *cube);
+// Suma los valores del cubo completo.
+int sum_of_cube(struct Node *cube) {
+    int sum = 0;
+    struct Node *currentface, *currentrow, *current = cube;
+    while (currentface != NULL) {
+        sum += sum_of_layer(currentface, 'z');
+        currentface = currentface->front;
+    }
+    return sum;
+}

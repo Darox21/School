@@ -41,16 +41,16 @@ void print_cube(struct Node *cube, int size);
 // // Iterar sobre cada cara y liberar la memoria.
 // void free_cube(struct Node *cube);
 
-// // Suma los valores a lo largo del eje X de izquierda a derecha.
-// int sum_of_row(struct Node *row);
+// Suma los valores a lo largo del eje X de izquierda a derecha.
+int sum_of_row(struct Node *row);
 
-// // Suma los valores a lo largo del eje Y de arriba a abajo.
-// int sum_of_column(struct Node *column);
+// Suma los valores a lo largo del eje Y de arriba a abajo.
+int sum_of_column(struct Node *column);
 
-// // Suma los valores en de una cara.
-// int sum_of_layer(struct Node *layer);
+// Suma los valores en de una cara.
+int sum_of_layer(struct Node *layer, char axis);
 
-// // Suma los valores del cubo completo.
-// int sum_of_cube(struct Node *cube);
+// Suma los valores del cubo completo.
+int sum_of_cube(struct Node *cube);
 
 #endif
