@@ -39,15 +39,16 @@ int main(){
     // // Suma una fila al cubo
     printf("Suma de la primera fila: %d\n", sum_of_row(cube));
     printf("Suma de la primera columna: %d\n", sum_of_column(cube));
-    printf("Suma de la primera cara normal a x: %d (La que va del 1 al 120)\n", 
-        sum_of_layer(cube, 'x')
+    printf("Suma de la primera cara normal a z: %d (La que va del 1 al 24)\n", 
+        sum_of_layer(cube, 'z')
     );
     printf("Suma de la primera cara normal a y: %d (La que va del 1 al 104)\n", 
         sum_of_layer(cube, 'y')
     );
-    printf("Suma de la primera cara normal a z: %d (La que va del 1 al 24)\n", 
-        sum_of_layer(cube, 'z')
+    printf("Suma de la primera cara normal a x: %d (La que va del 1 al 120)\n", 
+        sum_of_layer(cube, 'x')
     );
+    
     printf("Suma del cubo: %d\n", sum_of_cube(cube));
 
     // Libera el cubo
@@ -259,7 +260,7 @@ int sum_of_layer(struct Node *layer, char axis) {
 // Suma los valores del cubo completo.
 int sum_of_cube(struct Node *cube) {
     int sum = 0;
-    struct Node *currentface, *currentrow, *current = cube;
+    struct Node *currentface = cube;
     while (currentface != NULL) {
         sum += sum_of_layer(currentface, 'z');
         currentface = currentface->front;
