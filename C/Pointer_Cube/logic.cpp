@@ -61,7 +61,9 @@ int main(){
 /****************************************************************/
 
 struct Node *new_node(int data){
-    struct Node *node = (struct Node *)malloc(sizeof(struct Node));
+    // struct Node *node = (struct Node *)malloc(sizeof(struct Node));
+    // Malloc me ha dado problemas en windows.
+    struct Node *node = (struct Node *)calloc(1, sizeof(struct Node));
     node->data = node_number;
     node_number++;
     return node;
