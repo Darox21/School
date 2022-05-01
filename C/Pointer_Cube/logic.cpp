@@ -6,12 +6,13 @@
 // HECHO:
 // - Una función para crear el cubo de punteros.
 // - Una función para imprimir el cubo de punteros (en consola).
+// - Suma de Filas, Columnas y Capas
+// Por lo tanto está la lógica mínima que pidió el profesor
 
-// QUEDA PENDIENTE:
-// 1. Sumas de filas y columnas.
-// 2. Convertir los punteros dentro de la creación de la matriz en un
-// arreglo de punteros funciona por el momento, pero se vuelve poco legible
-// 3. Función para liberar cada puntero dentro de la matriz.
+// A CONSIDERAR:
+// - Convertir los punteros dentro de la creación de la matriz en un
+// arreglo de punteros (en lugar de currentlayer o currentrow, solo nodo[x])
+// - Función para liberar cada puntero dentro de la matriz.
 
 // La parte gráfica del cubo de punteros se puede encontrar en
 // el archivo principal de C/Pointer_Cube/main.cpp y sigue PENDIENTE.
