@@ -1,21 +1,11 @@
 // Este es el archivo de lógica del cubo de punteros.
-// Está anotado lo más posible para que sea fácil de leer.
+// Está anotado lo posible, para que sea fácil de leer.
 // Si prefieren agregar otros comentarios o código,
 // pueden hacer una pull request en GitHub.
 
-// HECHO:
-// - Una función para crear el cubo de punteros.
-// - Una función para imprimir el cubo de punteros (en consola).
-// - Suma de Filas, Columnas y Capas
-// Por lo tanto está la lógica mínima que pidió el profesor
-
-// A CONSIDERAR:
-// - Convertir los punteros dentro de la creación de la matriz en un
-// arreglo de punteros (en lugar de currentlayer o currentrow, solo nodo[x])
-// - Función para liberar cada puntero dentro de la matriz.
 
 // La parte gráfica del cubo de punteros se puede encontrar en
-// el archivo principal de C/Pointer_Cube/main.cpp y sigue PENDIENTE.
+// el archivo principal en C/Pointer_Cube/main.cpp
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,52 +14,22 @@
 
 int node_number = 0;
 
-/***************************** Main *****************************/
-/****************************************************************/
-
-// MAIN TEMPORAL EN LO QUE HAGO EL ARCHIVO DE GRÁFICOS.
-// Este es un main() temporal para probar el código.
-// Pero como no estoy en un IDE, no iba a hacer un makefile manualmente.
-int main(){
-    // Crea un nuevo cubo de punteros
-    struct Node *cube = new_cube(5);
-
-    // Imprime el cubo en consola
-    print_cube(cube, 5);
-
-    // // Suma una fila al cubo
-    printf("Suma de la primera fila: %d\n", sum_of_row(cube));
-    printf("Suma de la primera columna: %d\n", sum_of_column(cube));
-    printf("Suma de la primera cara normal a z: %d (La que va del 1 al 24)\n", 
-        sum_of_layer(cube, 'z')
-    );
-    printf("Suma de la primera cara normal a y: %d (La que va del 1 al 104)\n", 
-        sum_of_layer(cube, 'y')
-    );
-    printf("Suma de la primera cara normal a x: %d (La que va del 1 al 120)\n", 
-        sum_of_layer(cube, 'x')
-    );
-    
-    printf("Suma del cubo: %d\n", sum_of_cube(cube));
-
-    // Libera el cubo
-    // free_cube(cube);
-
-    return 0;
-}
-
 /********************* Function Definitions *********************/
 /****************************************************************/
 
-struct Node *new_node(int data){
-    // struct Node *node = (struct Node *)malloc(sizeof(struct Node));
-    // Malloc me ha dado problemas en windows.
-    struct Node *node = (struct Node *)calloc(1, sizeof(struct Node));
-    node->data = node_number;
-    node_number++;
+// Crea un nuevo nodo devuelve el puntero a este.
+//
+// n: valor para asignar a node.data
+struct Node *new_node(int n){
+	struct Node *node = (struct Node *)calloc(1, sizeof(struct Node));
+	// struct Node *node = (struct Node *)malloc(sizeof(struct Node));
+    node->data = n;
     return node;
 }
 
+// Crea una nueva fila de nodos devuelve el puntero al principio de la fila.
+//
+// size: Tamaño de la fila
 struct Node *new_row(int size){
     struct Node *root, *current, *next;
     int i;
@@ -91,8 +51,9 @@ struct Node *new_row(int size){
     return root;
 }
 
-// Crea una cara del cubo de punteros
-// de forma muy similar a la función para crear una lista.
+// Crea una cara del cubo de punteros devuelve el puntero al principio de la cara.
+//
+// size: Tamaño de la cara
 struct Node *new_face(int size){
     struct Node *root, *aboverow, *belowrow, *above, *below;
     int i;
@@ -122,9 +83,17 @@ struct Node *new_face(int size){
     return root;
 }
 
-// Create a pointer cube of the given size.
-struct Node *new_cube(int size){
-    // Puntero a la raíz y a cada cara
+// Crea un cubo de punteros devuelve el puntero al principio del cubo.
+// y por principio me refiero a arriba-izquierda-atrás.
+//
+// size: Tamaño del cubo
+// type: Tipo de dato para cada nodo
+// 		0: Ceros
+// 		1: Aecuencial
+// 		2: Aleatorio
+struct Node *new_cube(int size, int type){
+
+    // Puntero a la raíz y a cada capa
     struct Node *root, *frontface, *backface;
     // Punteros al principio de las filas actuales
     struct Node *frontrow, *backrow;
@@ -135,6 +104,7 @@ struct Node *new_cube(int size){
     root = new_face(size);
     backface = root;
     
+    // Crea el resto de las capas
     for(i = 1; i < size; i++){
         // Añadimos una nueva cara adelante de la actual
         frontface = new_face(size);
@@ -169,47 +139,140 @@ struct Node *new_cube(int size){
         // Y reiniciamos los otros punteros
 
     }
+    
+    // Aplica una función opcional para los valores de cada nodo
+    switch(type){
+    	case 0:
+    		printf("Cubo de ceros\n");
+    		break;
+    	case 1:
+    		printf("Cubo de de valores secuenciales\n");
+    		map_to_cube(root, &secuential_node);
+    		// El nodo secuencial usa una variable global
+    		// así que reseteamos esa variable.
+    		node_number = 0;
+			break;
+    	case 2:
+    		printf("Cubo de valores aleatorios\n");
+    		map_to_cube(root, &random_node);
+    		break;
+    	default:
+    		printf("Tipo de cubo desconocido\n");
+	}
 
     return root;
 }
 
-// Imprime el cubo en consola
-void print_cube(struct Node *cube, int size){
-    struct Node *previous[3];
-    int i, j, k;
-
-    previous[0] = cube; // previa x
-    previous[1] = cube; // previa y
-    previous[2] = cube; // previa z
-
-    for (i = 0; i < size; i++){
-        for (j = 0; j < size; j++){
-            for (k = 0; k < size; k++){
-                // Imprime el valor del nodo
-                printf("%d ", previous[0]->data);
-                // Nos movemos al siguiente nodo
-                previous[0] = previous[0]->right;
-            }
-            printf("\n");
-
-            // Nos movemos a la siguiente fila
-            previous[1] = previous[1]->down;
-            // Reiniciamos el puntero al valor actual
-            previous[0] = previous[1];
-        }
-        printf("\n");
-        // Nos movemos a la siguiente cara
-        previous[2] = previous[2]->front;
-        // Reiniciamos el puntero a la fila actual y al valor actual
-        previous[1] = previous[2];
-        previous[0] = previous[2];
-    }
+// Le da un valor secuencial a un nodo, tomando una variable global como referencia
+//
+// n: Nodo a modificar
+void secuential_node(struct Node *n){
+	n->data = node_number;
+	node_number++;
 }
 
-// // Iterar sobre cada cara y liberar la memoria.
-// void free_cube(struct Node *cube);
+// Le da un valor aleatorio a un nodo, del 0 al 999
+//
+// n: Nodo a modificar
+void random_node(struct Node *n){
+	n->data = rand() % 1000;
+}
+
+// Toma una función y la aplica a cada nodo
+//
+// cube: Puntero a la raíz del cubo
+// *f: Puntero a una función que retorna void, y tiene como parámetro un &nodo
+void map_to_cube(struct Node *cube, void(*f)(struct Node *)) {
+	struct Node *current[3] = {cube, cube, cube};
+	struct Node *next[3];
+	
+	// Primero guardamos un puntero al valor siguiente
+	// (por si borramos el valor anterior)
+	while (current[2] != NULL) {
+		next[2] = current[2]->front;
+		while (current[1] != NULL) {
+			next[1] = current[1]->down;
+			while (current[0] != NULL) {
+				next[0] = current[0]->right;
+				// Usamos la función
+				(*f)(current[0]);
+				current[0] = next[0];
+			}
+			// Continuar a la siguiente fila
+			current[1] = next[1];
+			current[0] = next[1];
+		}
+		// Continuar a la siguiente capa
+		current[2] = next[2];
+		current[1] = next[2];
+		current[0] = next[2];
+	}
+}
+
+// Retorna la longitud de una fila del cubo
+// Útil para obtener  el tamaño del cubo, considerando que 
+// todos sus lados son iguales
+//
+// cube: Puntero a la raíz del cubo
+int row_length(struct Node *cube) {
+	struct Node *current = cube;
+	int out = 0;
+	while (current != NULL) {
+		current = current->right;
+		out++;
+	}
+	return out;
+}
+
+// Imprime el cubo en la consola
+//
+// cube: Puntero a la raíz del cubo
+// size: Tamaño del cubo
+void print_cube(struct Node *cube){
+    struct Node *current[3] = {cube, cube, cube};
+    
+    while (current[2] != NULL) {
+		while (current[1] != NULL) {
+			while (current[0] != NULL) {
+				// Imprimimos y avanzamos a la derecha
+				printf("%d ", current[0]->data);
+				current[0] = current[0]->right;
+			}
+			printf("\n");
+			// Continuar a la siguiente fila
+			current[1] = current[1]->down;;
+			current[0] = current[1];
+		}
+		printf("\n");
+		// Continuar a la siguiente capa
+		current[2] = current[2]->front;
+		current[1] = current[2];
+		current[0] = current[2];
+	}
+}
+
+// Libera cada nodo del cubo
+//
+// cube: Puntero a la raíz del cubo
+void free_cube(struct Node *cube){
+	
+	// Declaración de una función local
+	// Ya que las funciones dentro de funciones no está en el estándar de C
+	// Y las funciones anónimas (lamdas) fueron añadidas solo hasta C++ 11
+	void free_node(struct Node *n);
+	
+	map_to_cube(cube, &free_node);
+}
+
+// Función para liberar un nodo individual
+// Se usa localmente en free_cube()
+void free_node(struct Node *n){
+	free(n);
+}
 
 // Suma los valores a lo largo del eje X de izquierda a derecha.
+//
+// row: Puntero al principio de la fila
 int sum_of_row(struct Node *row) {
     int sum = 0;
     struct Node *current = row;
@@ -221,6 +284,8 @@ int sum_of_row(struct Node *row) {
 }
 
 // Suma los valores a lo largo del eje Y de arriba a abajo.
+//
+// column: Puntero al principio de la columna
 int sum_of_column(struct Node *column) {
     int sum = 0;
     struct Node *current = column;
@@ -231,9 +296,12 @@ int sum_of_column(struct Node *column) {
     return sum;
 }
 
-// Suma los valores de una cara.
+// Suma los valores en de una cara.
 // Suma los valores normales a el axis especificado. (x, y, z)
-// Es decir, si es en "z", suma los valores en el plano "x" y "y".
+// Es decir, si es en "z", suma los valores en el plano (x,y).
+//
+// layer: Puntero al principio de la capa
+// axis: Eje normal al plano a sumar, 'x', 'y' o 'z'
 int sum_of_layer(struct Node *layer, char axis) {
     int sum = 0;
     struct Node *currentrow = layer;
@@ -261,6 +329,8 @@ int sum_of_layer(struct Node *layer, char axis) {
 }
 
 // Suma los valores del cubo completo.
+//
+// cube: Puntero a la raíz del cubo
 int sum_of_cube(struct Node *cube) {
     int sum = 0;
     struct Node *currentface = cube;
@@ -270,3 +340,64 @@ int sum_of_cube(struct Node *cube) {
     }
     return sum;
 }
+
+// Retorna el cubo en forma de un arreglo tridimencional
+// Pensado para la escritura de archivos
+//
+// cube: Puntero a la raíz del cubo
+int *cube_values(struct Node *cube) {
+	struct Node *current[3] = {cube, cube, cube};
+	int size = row_length(cube);
+	int *cube_data = (int*)malloc(size*size*size * sizeof(char));
+	int *ptr = cube_data;
+
+	while (current[2] != NULL) {
+		while (current[1] != NULL) {
+			while (current[0] != NULL) {
+				// Copiamos el dato del nodo al arreglo
+				*ptr = current[0]->data;
+				// Avanzamos al siguiente valor
+				ptr++;
+				current[0] = current[0]->right;
+			}
+			// Continuar a la siguiente fila
+			current[1] = current[1]->down;;
+			current[0] = current[1];
+		}
+		// Continuar a la siguiente capa
+		current[2] = current[2]->front;
+		current[1] = current[2];
+		current[0] = current[2];
+	}
+}
+
+// Cambia el valor de un nodo en la coordenada especificada
+// Retorna un int por la posibilidad en la que falle
+//
+// n: Puntero a la raíz del cubo
+// x,y,z: Coordenada a partir de (0,0,0)
+// value: Valor a otorgar para node.data
+int edit_coordinate(struct Node *n, int x, int y, int z, int value){
+	int i;
+	int max = row_length(n) - 1;
+	
+	if (max < x || max < y || max < z){
+		printf("Coordenada fuera de rango\n");
+		return 1;
+	}
+	
+	for (i=0; i<x; i++) {
+		n = n->right;
+	}
+	for (i=0; i<y; i++) {
+		n = n->down;
+	}
+	for (i=0; i<z; i++) {
+		n = n->front;
+	}
+	n->data = value;
+	return 0;
+}
+
+
+
