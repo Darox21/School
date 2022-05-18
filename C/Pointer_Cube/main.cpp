@@ -1,4 +1,4 @@
-// El programa del cubo de punteros 
+// El programa del cubo de punteros
 // Para la asignatura de Introducción a la programación.
 // Autor: Darío Quiñones Cruz (2022)
 
@@ -21,8 +21,8 @@
 
 int main() {
 	int MENU_SIZE = 5;
-    bool lines = true;
-    int win[2] = {
+	bool lines = true;
+	int win[2] = {
 	(int)(WINDOW_OFFSET*2 + (NODE_OFFSET*MENU_SIZE*1.5)+NODE_SIZE/2),
 	(int)(WINDOW_OFFSET*2 + NODE_OFFSET*MENU_SIZE)
 	};
@@ -63,13 +63,13 @@ int main() {
 
 			cube = new_cube(cube_size, cube_type);
 			printf("Cubo de (%d^3)\n\n", cube_size);
-			
+
 			// Dibuja el cubo
 			draw_cube(cube, lines, (int)12/(cube_size*2));
-			
+
 			// Menu para el cubo
 			cube_menu(cube);
-			
+
 			free_cube(cube);
 			break;
 		case '2':
@@ -81,7 +81,7 @@ int main() {
 			exit(0);
 			break;
 	}
-	
+
 	return 0;
 }
 
@@ -92,14 +92,14 @@ void cube_menu(struct Node *cube) {
 	int option, value, changed, exit;
 	char confirm_exit;
 	int coords[3] = {0,0,0};
-	
+
 	do { // Loop hasta Salir
-	
+
 		outtextxy(20,30,"1: Guardar   2: Editar    3: Salir");
 		printf("1: Guardar\n2: Editar\n");
-	
+
 		scanf("%d", &option);
-		
+
 		switch(option){
 			case 1:
 				//printf("Guardar como texto? (y/n)");
@@ -120,14 +120,14 @@ void cube_menu(struct Node *cube) {
 				scanf("%d", &coords[1]);
 				printf("z: ");
 				scanf("%d", &coords[2]);
-				
+
 				outtextxy(20, 30, "Nuevo valor par a el nodo:        ");
 				printf("valor: ");
 				scanf("%d", &value);
 				edit_coordinate(cube, coords[0], coords[1], coords[2], value);
 				changed = true;
 				draw_cube(cube, true, 0);
-				
+
 				break;
 			default:
 				if (changed == true) {
@@ -147,7 +147,7 @@ void cube_menu(struct Node *cube) {
 
 // Guarda el cubo en un archivo ubicado en /saves/
 // WORK IN PROGRESS
-// 
+//
 // cube: Puntero al primer nodo del cubo
 // mode: Tipo de guardado (Requerimento obligatorio)
 //		0: Archivo binario
@@ -162,27 +162,27 @@ int save_cube(struct Node *cube, int mode){
 	int *data = (int*)malloc(total_length * sizeof(int));
 	// Un int puede tener un máximo de 5 dígitos en decimal (32,767)
 	char *data_str = (char*)malloc(total_length * 5 * sizeof(char));
-	
+
 	data = cube_values(cube);
-	
+
 	// // Convertimos el arreglo en un string
 	// // Puede ser su propia función arr_to_str()
 	// for (int i=0; i<length; i++){
 	// 		sprintf(&)
 	// }
-	
+
 	// Escribimos al final del archivo los nuevos datos;
 	fptr = fopen(savename,"a");
-	
+
 	if (fptr == NULL){
-	  printf("Error al abrir \"%s\"", savename);   
-	  exit(1);             
+	  printf("Error al abrir \"%s\"", savename);
+	  exit(1);
 	}
-	
-	
+
+
 	printf("Escoje un nombre para tu cubo \n");
 	scanf("%s", savename);
-	
+
 	printf("Guardando...");
 	// {
 	// Nombre, fecha, tamaño,
@@ -220,13 +220,13 @@ int draw_node(struct Node *n, int pos[3], bool lines, int color) {
 	char text[32];
 	x = pos[0]+(int)(pos[2]/2);
 	y = pos[1]+(int)(pos[2]/3);
-	
+
 //	printf("Drawing Node\n");
 	setcolor(color);
 	setfillstyle(SOLID_FILL, color);
-	
+
 	bar(x, y, x+NODE_SIZE,y+NODE_SIZE);
-	
+
 	// Dibujar las líneas
 	if (lines) {
 		setcolor(WHITE);
@@ -243,7 +243,7 @@ int draw_node(struct Node *n, int pos[3], bool lines, int color) {
 			line(x+NODE_SIZE, y+(NODE_SIZE/2)-4, x+NODE_OFFSET, y+(NODE_SIZE/2)-4);
 		}
 	}
-	
+
 	// Texto dentro del nodo
 	sprintf(text, "%d", n->data);
 //	printf("text= %d, length %d\n", n->data, strlen(text));
@@ -251,7 +251,7 @@ int draw_node(struct Node *n, int pos[3], bool lines, int color) {
 	x += (NODE_SIZE/2) - (7 * text_len);
 	y += (NODE_SIZE/2) - (8);
 	outtextxy(x, y, text);
-	
+
 	return 0;
 }
 
@@ -262,47 +262,47 @@ int draw_node(struct Node *n, int pos[3], bool lines, int color) {
 // slowness: Tiempo de espera entre nodo y nodo, en milisegundos
 int draw_cube(struct Node *cube, bool lines, int slowness) {
 	struct Node *previous[3];
-    int i, j, k, color = 9;
-    int pos[3] = {0,0,0};
-    int size = row_length(cube);
-    
-    // Cierra todo lo demás
-    closegraph();
-    
-    // Una ventana solo para el cubo
+	int i, j, k, color = 9;
+	int pos[3] = {0,0,0};
+	int size = row_length(cube);
+
+	// Cierra todo lo demás
+	closegraph();
+
+	// Una ventana solo para el cubo
 	initwindow((size*90)+50*2,(size*80)+50*2, "Cube");
-	
+
 	settextstyle(1,0,1);
 
-    previous[0] = cube; // previo nodo x
-    previous[1] = cube; // previa fila y
-    previous[2] = cube; // previa cara z
-    
-    for (i = 0; i < size; i++){
-    	pos[2]=i*NODE_OFFSET+ WINDOW_OFFSET;
-        for (j = 0; j < size; j++){
-        	pos[1]=j*NODE_OFFSET+ WINDOW_OFFSET;
-            for (k = 0; k < size; k++){
-            	pos[0]=k*NODE_OFFSET+ WINDOW_OFFSET;
-				
+	previous[0] = cube; // previo nodo x
+	previous[1] = cube; // previa fila y
+	previous[2] = cube; // previa cara z
+
+	for (i = 0; i < size; i++){
+		pos[2]=i*NODE_OFFSET+ WINDOW_OFFSET;
+		for (j = 0; j < size; j++){
+			pos[1]=j*NODE_OFFSET+ WINDOW_OFFSET;
+			for (k = 0; k < size; k++){
+				pos[0]=k*NODE_OFFSET+ WINDOW_OFFSET;
+
 				draw_node(previous[0], pos, lines, color);
 				delay(slowness);
-                // Nos movemos al siguiente nodo
-                previous[0] = previous[0]->right;
-            }
+				// Nos movemos al siguiente nodo
+				previous[0] = previous[0]->right;
+			}
 
-            // Nos movemos a la siguiente fila
-            previous[1] = previous[1]->down;
-            // Reiniciamos el puntero al valor actual
-            previous[0] = previous[1];
-        }
-        color = (color%15)+1;
-        // Nos movemos a la siguiente cara
-        previous[2] = previous[2]->front;
-        // Reiniciamos el puntero a la fila actual y al valor actual
-        previous[1] = previous[2];
-        previous[0] = previous[2];
-    }
-    
-    return 0;
+			// Nos movemos a la siguiente fila
+			previous[1] = previous[1]->down;
+			// Reiniciamos el puntero al valor actual
+			previous[0] = previous[1];
+		}
+		color = (color%15)+1;
+		// Nos movemos a la siguiente cara
+		previous[2] = previous[2]->front;
+		// Reiniciamos el puntero a la fila actual y al valor actual
+		previous[1] = previous[2];
+		previous[0] = previous[2];
+	}
+
+	return 0;
 }

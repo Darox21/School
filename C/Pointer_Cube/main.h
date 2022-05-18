@@ -1,5 +1,7 @@
 // Encabezado de main.cpp
-
+// Contiene las funciones relacionadas a:
+// 			// Gráficos
+// 			// Manejo de archivos
 
 /*************************** GLOBALS ****************************/
 /****************************************************************/
@@ -18,7 +20,7 @@ void cube_menu(struct Node *cube);
 
 // Guarda el cubo en un archivo ubicado en /saves/
 // WORK IN PROGRESS
-// 
+//
 // cube: Puntero al primer nodo del cubo
 // mode: Tipo de guardado (Requerimento obligatorio)
 //		0: Archivo binario

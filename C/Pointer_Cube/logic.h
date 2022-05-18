@@ -1,7 +1,11 @@
 // Este es el encabezado de logic.cpp
+// Contiene las funciones relacionadas a:
+//             // Manejo de Nodos
+//             // Operaciones del cubo
+//             // Información de debug
 
 // Evitar que se incluya dos veces
-#ifndef LOGIC_H 
+#ifndef LOGIC_H
 #define LOGIC_H
 
 /*********************** Type Definitions ***********************/
@@ -10,13 +14,13 @@
 // Un nodo de un cubo de punteros
 struct Node
 {
-    int data;
-    struct Node *left; // Eje X
-    struct Node *right;
-    struct Node *up; // Eje Y
-    struct Node *down;
-    struct Node *front; // Eje Z
-    struct Node *back;
+	int data;
+	struct Node *left; // Eje X
+	struct Node *right;
+	struct Node *up; // Eje Y
+	struct Node *down;
+	struct Node *front; // Eje Z
+	struct Node *back;
 };
 
 /********************** Function Prototypes *********************/
@@ -43,7 +47,7 @@ struct Node *new_face(int size);
 // size: Tamaño del cubo
 // type: Tipo de dato para cada nodo
 // 		0: Ceros
-// 		1: Aecuencial
+// 		1: Secuencial
 // 		2: Aleatorio
 struct Node *new_cube(int size, int type);
 
@@ -102,7 +106,7 @@ int sum_of_layer(struct Node *layer, char axis);
 // cube: Puntero a la raíz del cubo
 int sum_of_cube(struct Node *cube);
 
-// Retorna el cubo en forma de un arreglo tridimencional
+// Retorna el cubo en forma de un arreglo tridimensional
 // Pensado para la escritura de archivos
 //
 // cube: Puntero a la raíz del cubo
